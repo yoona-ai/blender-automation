@@ -1,5 +1,8 @@
 # blender-automation
 
+# introduction
+Small proof of concept, how a generic 3d object modelled in Blender and the right UV map can be used, to apply shirts to it via script.
+
 ```
 blender -b models/shirt.blend --python change-image.py --render-output '/Users/manzked/workspaces/yoona/blender-automation/samples/output/shirt01-render##.png' --render-frame 1 -- -f '/Users/manzked/workspaces/yoona/blender-automation/samples/input/shirt01.png' -o 'Object'
 ```
