@@ -7,12 +7,13 @@ object_name = ''
 cpu_only = False
 transparent_background = False
 denoise = False
+debug = True
 
 if '--' in sys.argv:
     argv = sys.argv[sys.argv.index('--') + 1:]
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', '--filename', dest='filename', metavar='FILE')
-    parser.add_argument('-o', '--object', dest='object', default='Object', required=False)
+    parser.add_argument('-o', '--object', dest='object', required=False)
     parser.add_argument('-c', '--cpu', dest='use_cpu', type=bool, default=False, required=False)
     parser.add_argument('-t', '--transparent', dest='transparent_background', type=bool, default=False, required=False)
     parser.add_argument('-d', '--denoise', dest='denoise', type=bool, default=False, required=False)
@@ -56,12 +57,31 @@ if denoise:
 if transparent_background:
     bpy.context.scene.render.film_transparent = True
 
-shirt = bpy.data.objects[object_name]
-materials = shirt.data.materials
-mat = materials[0]
-mat.use_nodes = True
-bsdf = mat.node_tree.nodes["Principled BSDF"]
+if object_name is None:
+    objects = ["Front", "Back"]
+else:
+    objects = [object_name]
 
-texImage = mat.node_tree.nodes.new('ShaderNodeTexImage')
-texImage.image = bpy.data.images.load(image_filename)
-mat.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])
+for object_name in objects:
+    object = bpy.data.objects[object_name]
+    materials = object.data.materials
+    mat = materials[0]
+    mat.use_nodes = True
+
+    #Principled BSDF
+    if debug:
+        for node in mat.node_tree.nodes:
+            print(node)
+            #print(node.name)
+            #print(dir(node))
+
+    tree_node_name = "Principled BSDF"
+    for node in mat.node_tree.nodes:
+        if 'Principled BSDF' in node.name:
+            tree_node_name = node.name
+
+    bsdf = mat.node_tree.nodes[tree_node_name]
+
+    texImage = mat.node_tree.nodes.new('ShaderNodeTexImage')
+    texImage.image = bpy.data.images.load(image_filename)
+    mat.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])

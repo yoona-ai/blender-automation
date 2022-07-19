@@ -24,7 +24,7 @@ blender -b models/shirt.blend --python change-image.py --render-output '/Users/m
 
 **-f** full qualified path for the file to be used for the texture
 
-**-o** name of the node, where the image has to be replaced (default 'Object')
+**-o** name of the node, where the image has to be replaced (Examples "Front", "Back", if not specified we will replace both)
 
 **-t** True, for a transparent background (default False)
 
